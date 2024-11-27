@@ -1,0 +1,53 @@
+name: LMO Processing
+
+on:
+  schedule:
+    - cron: '0 0 * * 1' 
+    - cron: '0 0 * * 5' 
+  workflow_dispatch:
+
+
+jobs:
+  process:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.9
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Download object models
+      run: |
+        wget https://huggingface.co/datasets/bop-benchmark/datasets/resolve/main/lmo/lmo_models.zip
+        unzip lmo_models.zip
+
+    - name: Process models
+      run: |
+        python scripts/process_models.py
+
+    - name: Zip processed folders
+      run: |
+        zip -r processed_models.zip processed_models/
+        zip -r processed_models_eval.zip processed_models_eval/
+
+    - name: Upload processed results
+      uses: actions/upload-artifact@v3
+      with:
+        name: processed-models
+        path: processed_models.zip
+
+    - name: Upload processed eval results
+      uses: actions/upload-artifact@v3
+      with:
+        name: processed-models-eval
+        path: processed_models_eval.zip
+
