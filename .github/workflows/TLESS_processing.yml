@@ -40,8 +40,9 @@ jobs:
 
     - name: Zip processed folders
       run: |
-        zip -r processed_models.zip processed_models/
+        zip -r processed_models_cad.zip processed_models_cad/
         zip -r processed_models_eval.zip processed_models_eval/
+        zip -r processed_models_reconst.zip processed_models_reconst/
 
     - name: Upload processed results
       uses: actions/upload-artifact@v3
@@ -54,4 +55,10 @@ jobs:
       with:
         name: processed-models-eval
         path: processed_models_eval.zip
+
+    - name: Upload processed reconst results
+      uses: actions/upload-artifact@v3
+      with:
+        name: processed-models-reconst
+        path: processed_models_reconst.zip
 
