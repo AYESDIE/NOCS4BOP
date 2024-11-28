@@ -23,7 +23,7 @@ for input_dir in ["models", "models_eval"]:
             print(f"Unknown file type: {file_name}")
             continue
         
-        file_name_wo_ext = file_name.split(".")[0]
+        file_name_wo_ext = file_name.split(".")[0].split("/")[-1]
         points = numpy.asarray(point_cloud.points)
         nocs_points, shift, scale = calculate_nocs(points)
         numpy.savez(os.path.join(f"processed_{input_dir}", f"{file_name_wo_ext}_nocs.npz"), nocs_points=nocs_points, shift=shift, scale=scale)
