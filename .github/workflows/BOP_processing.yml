@@ -1,0 +1,282 @@
+name: BOP Processing
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  schedule:
+    - cron: '0 0 * * 1' 
+    - cron: '0 0 * * 5' 
+  workflow_dispatch:
+
+
+jobs:
+  process_lm:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.9
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Download object models
+      run: |
+        wget https://huggingface.co/datasets/bop-benchmark/datasets/resolve/main/lm/lm_models.zip
+        unzip lm_models.zip
+
+    - name: Process models
+      run: |
+        python scripts/process_models.py
+
+    - name: Zip processed folders
+      run: |
+        zip -r processed_models.zip processed_models/ processed_models_eval/
+
+    - name: Upload processed results
+      uses: actions/upload-artifact@v4
+      with:
+        name: lm-processed-models
+        path: processed_models.zip
+  
+  process_lmo:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.9
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Download object models
+      run: |
+        wget https://huggingface.co/datasets/bop-benchmark/datasets/resolve/main/lmo/lmo_models.zip
+        unzip lmo_models.zip
+
+    - name: Process models
+      run: |
+        python scripts/process_models.py
+
+    - name: Zip processed folders
+      run: |
+        zip -r processed_models.zip processed_models/ processed_models_eval/
+
+    - name: Upload processed results
+      uses: actions/upload-artifact@v4
+      with:
+        name: lmo-processed-models
+        path: processed_models.zip
+
+  process_tless:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.9
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Download object models
+      run: |
+        wget https://huggingface.co/datasets/bop-benchmark/datasets/resolve/main/tless/tless_models.zip
+        unzip tless_models.zip
+
+    - name: Process models
+      run: |
+        python scripts/process_models.py
+
+    - name: Zip processed folders
+      run: |
+        zip -r processed_models.zip processed_models_cad/ processed_models_eval/ processed_models_reconst/
+
+    - name: Upload processed results
+      uses: actions/upload-artifact@v4
+      with:
+        name: tless-processed-models
+        path: processed_models.zip
+  
+  process_tudl:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.9
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Download object models
+      run: |
+        wget https://huggingface.co/datasets/bop-benchmark/datasets/resolve/main/tudl/tudl_models.zip
+        unzip tudl_models.zip
+
+    - name: Process models
+      run: |
+        python scripts/process_models.py
+
+    - name: Zip processed folders
+      run: |
+        zip -r processed_models.zip processed_models/ processed_models_eval/
+
+    - name: Upload processed results
+      uses: actions/upload-artifact@v4
+      with:
+        name: tudl-processed-models
+        path: processed_models.zip
+
+  process_ycbv:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.9
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Download object models
+      run: |
+        wget https://huggingface.co/datasets/bop-benchmark/datasets/resolve/main/ycbv/ycbv_models.zip
+        unzip ycbv_models.zip
+
+    - name: Process models
+      run: |
+        python scripts/process_models.py
+
+    - name: Zip processed folders
+      run: |
+        zip -r processed_models.zip processed_models/ processed_models_eval/
+
+    - name: Upload processed results
+      uses: actions/upload-artifact@v4
+      with:
+        name: ycbv-processed-models
+        path: processed_models.zip
+
+  combine_and_publish:
+    needs: [process_lm, process_lmo, process_tless, process_tudl, process_ycbv]
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Download LM Processed Results
+      uses: actions/download-artifact@v4
+      with:
+        name: lm-processed-models
+        path: lm_artifacts
+
+    - name: Download LMO Processed Results
+      uses: actions/download-artifact@v4
+      with:
+        name: lmo-processed-models
+        path: lmo_artifacts
+    
+    - name: Download TLESS Processed Results
+      uses: actions/download-artifact@v4
+      with:
+        name: tless-processed-models
+        path: tless_artifacts
+
+    - name: Download TUDL Processed Results
+      uses: actions/download-artifact@v4
+      with:
+        name: tudl-processed-models
+        path: tudl_artifacts
+
+    - name: Download YCBV Processed Results
+      uses: actions/download-artifact@v4
+      with:
+        name: ycbv-processed-models
+        path: ycbv_artifacts
+
+    - name: Organize ZIP Files
+      run: |
+        mkdir BOP_NOCS
+        ls -R
+
+        mkdir BOP_NOCS/lm
+        mv lm_artifacts/processed_models.zip BOP_NOCS/lm/
+
+        mkdir BOP_NOCS/lmo
+        mv lmo_artifacts/processed_models.zip BOP_NOCS/lmo/
+
+        mkdir BOP_NOCS/tless
+        mv tless_artifacts/processed_models.zip BOP_NOCS/tless/
+
+        mkdir BOP_NOCS/tudl
+        mv tudl_artifacts/processed_models.zip BOP_NOCS/tudl/
+
+        mkdir BOP_NOCS/ycbv
+        mv ycbv_artifacts/processed_models.zip BOP_NOCS/ycbv/
+
+        ls -R BOP_NOCS
+
+    - name: Create index.html
+      run: |
+        # Create the HTML file with links to the ZIP files
+        echo "<html><head><title>BOP Processed Models</title></head><body>" > BOP_NOCS/index.html
+        echo "<h1>BOP Processed Models</h1>" >> BOP_NOCS/index.html
+        echo "<ul>" >> BOP_NOCS/index.html
+
+        echo "<li><a href=\"lm/processed_models.zip\">lm/processed_models.zip</a></li>" >> BOP_NOCS/index.html
+        echo "<li><a href=\"lmo/processed_models.zip\">lmo/processed_models.zip</a></li>" >> BOP_NOCS/index.html
+        echo "<li><a href=\"tless/processed_models.zip\">tless/processed_models.zip</a></li>" >> BOP_NOCS/index.html
+        echo "<li><a href=\"tudl/processed_models.zip\">tudl/processed_models.zip</a></li>" >> BOP_NOCS/index.html
+        echo "<li><a href=\"ycbv/processed_models.zip\">ycbv/processed_models.zip</a></li>" >> BOP_NOCS/index.html
+
+        echo "</ul>" >> BOP_NOCS/index.html
+
+        echo "Last Updated: $(date)" >> BOP_NOCS/index.html
+        echo "</body></html>" >> BOP_NOCS/index.html
+
+    - name: Deploy ZIP Files to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: BOP_NOCS
+
+
+
+
+
