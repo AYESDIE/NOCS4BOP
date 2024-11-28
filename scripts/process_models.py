@@ -7,7 +7,10 @@ from nocs4bop import calculate_nocs
 import open3d
 import numpy
 
-for input_dir in ["models", "models_eval"]:
+for input_dir in os.listdir("."):
+    if "models" not in input_dir:
+        continue
+    
     if not os.path.exists(input_dir):
         continue
     os.makedirs(f"processed_{input_dir}", exist_ok=True)
