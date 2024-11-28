@@ -11,8 +11,9 @@ for input_dir in os.listdir("."):
     if "models" not in input_dir:
         continue
     
-    if not os.path.exists(input_dir):
+    if not os.path.isdir(input_dir):
         continue
+    
     os.makedirs(f"processed_{input_dir}", exist_ok=True)
     for file_name in os.listdir(input_dir):
         file_name = os.path.join(input_dir, file_name)
