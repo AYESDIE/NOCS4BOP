@@ -44,13 +44,13 @@ jobs:
         zip -r processed_models_eval.zip processed_models_eval/
 
     - name: Upload processed results
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: processed-models
         path: processed_models.zip
 
     - name: Upload processed eval results
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: processed-models-eval
         path: processed_models_eval.zip
