@@ -29,5 +29,9 @@ for input_dir in os.listdir("."):
         
         file_name_wo_ext = file_name.split(".")[0].split("/")[-1]
         points = numpy.asarray(point_cloud.points)
-        nocs_points, shift, scale = calculate_nocs(points)
-        numpy.savez(os.path.join(f"processed_{input_dir}", f"{file_name_wo_ext}_nocs.npz"), nocs_points=nocs_points, shift=shift, scale=scale)
+        nocs_points, shift, scale = calculate_nocs(points, False)
+        numpy.savez(os.path.join(f"processed_{input_dir}", f"{file_name_wo_ext}_nocs_random_sample.npz"), nocs_points=nocs_points, shift=shift, scale=scale)
+        
+        nocs_points, shift, scale = calculate_nocs(points, True)
+        numpy.savez(os.path.join(f"processed_{input_dir}", f"{file_name_wo_ext}_nocs_farthest_point_sample.npz"), nocs_points=nocs_points, shift=shift, scale=scale)
+        
