@@ -30,7 +30,7 @@ jobs:
 
     - name: Download object models
       run: |
-        wget https://huggingface.co/datasets/bop-benchmark/datasets/resolve/main/lm/lm_models.zip
+        wget https://huggingface.co/datasets/bop-benchmark/lm/resolve/main/lm_models.zip
         unzip lm_models.zip
 
     - name: Process models
@@ -66,7 +66,7 @@ jobs:
 
     - name: Download object models
       run: |
-        wget https://huggingface.co/datasets/bop-benchmark/datasets/resolve/main/lmo/lmo_models.zip
+        wget https://huggingface.co/datasets/bop-benchmark/lmo/resolve/main/lmo_models.zip
         unzip lmo_models.zip
 
     - name: Process models
@@ -102,7 +102,7 @@ jobs:
 
     - name: Download object models
       run: |
-        wget https://huggingface.co/datasets/bop-benchmark/datasets/resolve/main/tless/tless_models.zip
+        wget https://huggingface.co/datasets/bop-benchmark/tless/resolve/main/tless_models.zip
         unzip tless_models.zip
 
     - name: Process models
@@ -138,7 +138,7 @@ jobs:
 
     - name: Download object models
       run: |
-        wget https://huggingface.co/datasets/bop-benchmark/datasets/resolve/main/tudl/tudl_models.zip
+        wget https://huggingface.co/datasets/bop-benchmark/tudl/resolve/main/tudl_models.zip
         unzip tudl_models.zip
 
     - name: Process models
@@ -174,7 +174,7 @@ jobs:
 
     - name: Download object models
       run: |
-        wget https://huggingface.co/datasets/bop-benchmark/datasets/resolve/main/ycbv/ycbv_models.zip
+        wget https://huggingface.co/datasets/bop-benchmark/ycbv/resolve/main/ycbv_models.zip
         unzip ycbv_models.zip
 
     - name: Process models
