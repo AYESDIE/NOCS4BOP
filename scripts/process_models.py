@@ -4,7 +4,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from nocs4bop import calculate_nocs
 
-import open3d
+import bop_toolkit_lib.inout
 import numpy
 
 for input_dir in os.listdir("."):
@@ -18,20 +18,16 @@ for input_dir in os.listdir("."):
     for file_name in os.listdir(input_dir):
         file_name = os.path.join(input_dir, file_name)
         if file_name.endswith(".ply"):
-            point_cloud = open3d.io.read_point_cloud(file_name)
-            points = numpy.asarray(point_cloud.points)
-        elif file_name.endswith(".obj"):
-            point_cloud = open3d.io.read_triangle_mesh(file_name)
-            points = numpy.asarray(point_cloud.vertices)
+            point_cloud = bop_toolkit_lib.inout.load_ply(file_name) #open3d.io.read_point_cloud()
+            points = point_cloud['pts']
         else:
             print(f"Unknown file type: {file_name}")
             continue
         
         file_name_wo_ext = file_name.split(".")[0].split("/")[-1]
-        points = numpy.asarray(point_cloud.points)
-        nocs_points, shift, scale = calculate_nocs(points, False)
-        numpy.savez(os.path.join(f"processed_{input_dir}", f"{file_name_wo_ext}_nocs_random_sample.npz"), nocs_points=nocs_points, shift=shift, scale=scale)
+        point_cloud['pts'] = calculate_nocs(points, False)
+        bop_toolkit_lib.inout.save_ply(os.path.join(f"processed_{input_dir}", f"{file_name_wo_ext}_nocs_random_sample.ply"), point_cloud)
         
-        nocs_points, shift, scale = calculate_nocs(points, True)
-        numpy.savez(os.path.join(f"processed_{input_dir}", f"{file_name_wo_ext}_nocs_farthest_point_sample.npz"), nocs_points=nocs_points, shift=shift, scale=scale)
+        point_cloud['pts'] = calculate_nocs(points, True)
+        bop_toolkit_lib.inout.save_ply(os.path.join(f"processed_{input_dir}", f"{file_name_wo_ext}_nocs_farthest_point_sample.ply"), point_cloud)
         

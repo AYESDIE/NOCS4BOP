@@ -12,4 +12,4 @@ def calculate_nocs(points, furthest_point_sampling=False):
 
     scaled_points = centered_points * scale * numpy.array([[1.0, 1.0, -1.0]])
 
-    return scaled_points, shift, scale
+    return scaled_points
