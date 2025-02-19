@@ -8,7 +8,7 @@ def calculate_nocs(points, furthest_point_sampling=False):
     shift = -centroid
 
     size = 2 * numpy.amax(numpy.abs(centered_points), axis=0)
-    scale = 1 / numpy.linalg.norm(size)
+    scale = 1.0 / numpy.max(size)
 
     scaled_points = centered_points * scale * numpy.array([[1.0, 1.0, -1.0]])
 
