@@ -18,16 +18,12 @@ for input_dir in os.listdir("."):
     for file_name in os.listdir(input_dir):
         file_name = os.path.join(input_dir, file_name)
         if file_name.endswith(".ply"):
-            point_cloud = bop_toolkit_lib.inout.load_ply(file_name) #open3d.io.read_point_cloud()
+            point_cloud = bop_toolkit_lib.inout.load_ply(file_name)
             points = point_cloud['pts']
         else:
             print(f"Unknown file type: {file_name}")
             continue
         
         file_name_wo_ext = file_name.split(".")[0].split("/")[-1]
-        point_cloud['pts'] = calculate_nocs(points, False)
-        bop_toolkit_lib.inout.save_ply(os.path.join(f"processed_{input_dir}", f"{file_name_wo_ext}_nocs_random_sample.ply"), point_cloud)
-        
-        point_cloud['pts'] = calculate_nocs(points, True)
-        bop_toolkit_lib.inout.save_ply(os.path.join(f"processed_{input_dir}", f"{file_name_wo_ext}_nocs_farthest_point_sample.ply"), point_cloud)
-        
+        point_cloud['pts'] = calculate_nocs(points)
+        bop_toolkit_lib.inout.save_ply(os.path.join(f"processed_{input_dir}", f"{file_name_wo_ext}_nocs.ply"), point_cloud)        

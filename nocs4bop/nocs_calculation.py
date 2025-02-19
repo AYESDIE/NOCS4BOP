@@ -1,8 +1,6 @@
 import numpy
-from .sampling import sample_points
 
-def calculate_nocs(points, furthest_point_sampling=False):
-    points = sample_points(points, 1024, "random_sample" if not furthest_point_sampling else "farthest_point_sample")
+def calculate_nocs(points):
     centroid = points.mean(axis=0)
     centered_points = points - centroid
     shift = -centroid
